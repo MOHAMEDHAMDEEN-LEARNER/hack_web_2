@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Trophy, Calendar, Github, Lightbulb, Cpu, FileText, Zap } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Landing() {
+  const [, navigate] = useLocation();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
       {/* Header with Login Buttons */}
@@ -11,14 +14,14 @@ export default function Landing() {
           <Button 
             size="sm" 
             variant="secondary"
-            onClick={() => window.location.href = '/admin/login'}
+            onClick={() => navigate('/admin/login')}
           >
             Admin/Jury Login
           </Button>
           <Button 
             size="sm" 
             variant="secondary"
-            onClick={() => window.location.href = '/applicant/login'}
+            onClick={() => navigate('/applicant/login')}
           >
             Applicant Login
           </Button>
@@ -38,7 +41,7 @@ export default function Landing() {
           <div className="flex gap-4 justify-center">
             <Button 
               size="lg" 
-              onClick={() => window.location.href = '/register'}
+              onClick={() => navigate('/register')}
               className="bg-blue-600 hover:bg-blue-700"
             >
               Register as Participant

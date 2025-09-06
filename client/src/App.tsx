@@ -40,31 +40,35 @@ function Router() {
 
   return (
     <Switch>
+      {/* Applicant Portal Routes - Always available regardless of admin auth */}
+      <Route path="/applicant/login" component={ApplicantLogin} />
+      <Route path="/applicant/dashboard" component={ApplicantDashboard} />
+      <Route path="/applicant/submissions" component={ApplicantSubmissions} />
+      <Route path="/applicant/submit/:stageId" component={StageSubmission} />
+      
+      {/* Public Routes */}
+      <Route path="/register" component={Registration} />
+      <Route path="/confirm-participation" component={ConfirmParticipation} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/payment-checkout" component={PaymentCheckout} />
+      <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/payment-failed" component={PaymentFailed} />
+      <Route path="/payment-cancelled" component={PaymentCancelled} />
+
+      {/* Always show Landing page on root path, regardless of auth status */}
+      <Route path="/" component={Landing} />
+      
+      {/* Admin Dashboard - dedicated route */}
+      <Route path="/admin/dashboard">
+        {isAuthenticated && (user as any)?.role === 'admin' ? <AdminDashboard /> : <AdminLogin />}
+      </Route>
+
       {!isAuthenticated ? (
         <>
-          <Route path="/" component={Landing} />
-          <Route path="/register" component={Registration} />
-          <Route path="/confirm-participation" component={ConfirmParticipation} />
-          <Route path="/admin/login" component={AdminLogin} />
-          {/* Payment Routes (no auth required for testing) */}
-          <Route path="/payment-checkout" component={PaymentCheckout} />
-          <Route path="/payment-success" component={PaymentSuccess} />
-          <Route path="/payment-failed" component={PaymentFailed} />
-          <Route path="/payment-cancelled" component={PaymentCancelled} />
-          {/* Applicant Portal Routes (no admin auth required) */}
-          <Route path="/applicant/login" component={ApplicantLogin} />
-          <Route path="/applicant/dashboard" component={ApplicantDashboard} />
-          <Route path="/applicant/submissions" component={ApplicantSubmissions} />
-          <Route path="/applicant/submit/:stageId" component={StageSubmission} />
+          {/* No additional routes needed here since public routes are above */}
         </>
       ) : (
         <>
-          <Route path="/">
-            {(user as any)?.role === 'admin' && <AdminDashboard />}
-            {(user as any)?.role === 'jury' && <JuryDashboard />}
-            {(user as any)?.role === 'applicant' && <ApplicantDashboard />}
-            {!(user as any)?.role && <Landing />}
-          </Route>
           {/* Admin Routes */}
           <Route path="/applicants">
             {(user as any)?.role === 'admin' || (user as any)?.role === 'jury' ? <ApplicantsPage /> : <NotFound />}
@@ -96,11 +100,6 @@ function Router() {
           <Route path="/settings">
             {(user as any)?.role === 'admin' ? <AdminSettings /> : <NotFound />}
           </Route>
-          {/* Payment Routes (available for authenticated users too) */}
-          <Route path="/payment-checkout" component={PaymentCheckout} />
-          <Route path="/payment-success" component={PaymentSuccess} />
-          <Route path="/payment-failed" component={PaymentFailed} />
-          <Route path="/payment-cancelled" component={PaymentCancelled} />
           {/* Jury Routes - handled in admin routes above */}
           {/* Applicant Routes */}
           {(user as any)?.role === 'applicant' && (
@@ -108,13 +107,6 @@ function Router() {
               <Route path="/my-submissions" component={ApplicantDashboard} />
             </>
           )}
-          <Route path="/register" component={Registration} />
-          <Route path="/confirm-participation" component={ConfirmParticipation} />
-          {/* Applicant Portal Routes (available even when admin is logged in) */}
-          <Route path="/applicant/login" component={ApplicantLogin} />
-          <Route path="/applicant/dashboard" component={ApplicantDashboard} />
-          <Route path="/applicant/submissions" component={ApplicantSubmissions} />
-          <Route path="/applicant/submit/:stageId" component={StageSubmission} />
         </>
       )}
       <Route component={NotFound} />

@@ -10,12 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { CheckCircle, ArrowLeft } from "lucide-react";
+import { CheckCircle, ArrowLeft, X } from "lucide-react";
 
 const registrationSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  mobile: z.string().min(10, "Mobile number must be at least 10 digits"),
+  mobile: z.string()
+    .regex(/^\d{10}$/, "Mobile number must be exactly 10 digits"),
   studentId: z.string().min(1, "Student ID is required"),
   course: z.string().min(1, "Course is required"),
   yearOfGraduation: z.string().min(1, "Year of graduation is required"),
@@ -28,6 +29,7 @@ type RegistrationFormData = z.infer<typeof registrationSchema>;
 export default function Registration() {
   const { toast } = useToast();
   const [registrationId, setRegistrationId] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
 
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
@@ -52,22 +54,82 @@ export default function Registration() {
     },
     onSuccess: (data) => {
       setRegistrationId(data.registrationId);
+      setFieldErrors({}); // Clear any field errors on success
       toast({
         title: "Registration Successful!",
         description: "Check your email for the registration confirmation.",
       });
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
+      console.log("=== REGISTRATION ERROR DEBUG ===");
+      console.log("Full error object:", JSON.stringify(error, null, 2));
+      console.log("Error message:", error.message);
+      console.log("Error status:", error.status);
+      console.log("Error fieldErrors:", error.fieldErrors);
+      console.log("Error keys:", Object.keys(error));
+      
+      // Clear previous field errors
+      setFieldErrors({});
+      
+      let shouldSuppressToast = false;
+      const newFieldErrors: {[key: string]: string} = {};
+      
+      // First priority: Check if the error response contains field-specific errors
+      if (error.fieldErrors && typeof error.fieldErrors === 'object' && Object.keys(error.fieldErrors).length > 0) {
+        console.log("✅ Found server fieldErrors:", error.fieldErrors);
+        Object.assign(newFieldErrors, error.fieldErrors);
+        shouldSuppressToast = true;
+      } 
+      
+      // Second priority: Parse error message for known patterns
+      if (error.message && typeof error.message === 'string') {
+        const errorMessage = error.message.toLowerCase();
+        console.log("Checking error message:", errorMessage);
+        
+        if (errorMessage.includes('email') && errorMessage.includes('registered')) {
+          console.log("✅ Detected email registration error");
+          newFieldErrors.email = 'Email already registered';
+          shouldSuppressToast = true;
+        }
+        if (errorMessage.includes('mobile') && errorMessage.includes('registered')) {
+          console.log("✅ Detected mobile registration error");
+          newFieldErrors.mobile = 'Mobile number already registered';
+          shouldSuppressToast = true;
+        }
+      }
+      
+      // If we have field errors, set them and suppress toast
+      if (shouldSuppressToast && Object.keys(newFieldErrors).length > 0) {
+        console.log("✅ Setting field errors and suppressing toast:", newFieldErrors);
+        setFieldErrors(newFieldErrors);
+        console.log("=== TOAST SUPPRESSED ===");
+        return; // Exit early - NO TOAST
+      }
+      
+      // Only show toast for non-field-specific errors
+      console.log("❌ No field errors detected, showing toast");
+      console.log("=== SHOWING TOAST ===");
       toast({
         title: "Registration Failed",
-        description: error.message,
+        description: error.message || "An error occurred during registration. Please try again.",
         variant: "destructive",
       });
     },
   });
 
   const onSubmit = (data: RegistrationFormData) => {
+    setFieldErrors({}); // Clear field errors when submitting
     registrationMutation.mutate(data);
+  };
+
+  const clearFieldError = (fieldName: string) => {
+    if (fieldErrors[fieldName]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
   };
 
   if (registrationId) {
@@ -143,9 +205,33 @@ export default function Registration() {
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="your.email@example.com" {...field} />
+                          <div className="relative">
+                            <Input 
+                              type="email" 
+                              placeholder="your.email@example.com" 
+                              {...field} 
+                              className={fieldErrors.email ? "border-red-500 focus:border-red-500 pr-10" : ""}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                clearFieldError('email');
+                              }}
+                            />
+                            {fieldErrors.email && (
+                              <X 
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-red-500 cursor-pointer hover:text-red-600 transition-colors" 
+                                onClick={() => {
+                                  field.onChange('');
+                                  clearFieldError('email');
+                                }}
+                              />
+                            )}
+                          </div>
                         </FormControl>
-                        <FormMessage />
+                        {fieldErrors.email ? (
+                          <p className="text-sm text-red-500 mt-1">{fieldErrors.email}</p>
+                        ) : (
+                          <FormMessage />
+                        )}
                       </FormItem>
                     )}
                   />
@@ -157,9 +243,32 @@ export default function Registration() {
                       <FormItem>
                         <FormLabel>Mobile Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="+1234567890" {...field} />
+                          <div className="relative">
+                            <Input 
+                              placeholder="+91 1234567890" 
+                              {...field} 
+                              className={fieldErrors.mobile ? "border-red-500 focus:border-red-500 pr-10" : ""}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                clearFieldError('mobile');
+                              }}
+                            />
+                            {fieldErrors.mobile && (
+                              <X 
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-red-500 cursor-pointer hover:text-red-600 transition-colors" 
+                                onClick={() => {
+                                  field.onChange('');
+                                  clearFieldError('mobile');
+                                }}
+                              />
+                            )}
+                          </div>
                         </FormControl>
-                        <FormMessage />
+                        {fieldErrors.mobile ? (
+                          <p className="text-sm text-red-500 mt-1">{fieldErrors.mobile}</p>
+                        ) : (
+                          <FormMessage />
+                        )}
                       </FormItem>
                     )}
                   />

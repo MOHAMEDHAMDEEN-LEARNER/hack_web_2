@@ -1,28 +1,25 @@
-import type { Express } from "express";
-import { createServer, type Server } from "http";
-import { createReadStream } from "fs";
-import path from "path";
-import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
-import * as XLSX from 'xlsx';
-import multer from 'multer';
-import { insertApplicantSchema, insertSubmissionSchema, insertEventSettingsSchema } from "@shared/schema";
-import { emailService } from "./services/emailService";
-import { otpService } from "./services/otpService";
-import { randomUUID } from "crypto";
-import { z } from "zod";
-import bcrypt from "bcryptjs";
-import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import { CCAvenueService } from './services/ccavenueService';
-
-// Configure multer for file uploads
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-  },
-  fileFilter: (req, file, cb) => {
+import helmet from 'helmet';
+import { z } from 'zod';
+// Add security headers
+app.use(helmet());
+// Input validation schema
+const applicantSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(2),
+  mobile: z.string().regex(/^\+?[1-9]\d{9,14}$/),
+  studentId: z.string().min(1)
+});
+// Validate request body middleware
+const validateBody = (schema: z.ZodSchema) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await schema.parseAsync(req.body);
+      next();
+    } catch (error) {
+      res.status(400).json({ error: error.errors });
+    }
+  };
+};
     const allowedTypes = [
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'application/vnd.ms-excel',
@@ -168,17 +165,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Simple logout route
+  app.post('/api/auth/logout', (req: any, res) => {
+    req.logout((err: any) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      req.session.destroy((err: any) => {
+        if (err) {
+          return res.status(500).json({ message: "Session destruction failed" });
+        }
+        res.clearCookie('connect.sid'); // Clear the session cookie
+        res.json({ message: "Logged out successfully" });
+      });
+    });
+  });
+
+  // Alternative GET logout route for fallback
+  app.get('/api/auth/logout', (req: any, res) => {
+    req.logout((err: any) => {
+      if (err) {
+        console.error("Logout error:", err);
+      }
+      req.session.destroy((destroyErr: any) => {
+        if (destroyErr) {
+          console.error("Session destruction error:", destroyErr);
+        }
+        res.clearCookie('connect.sid');
+        // Redirect to the root path after logout
+        res.redirect('/');
+      });
+    });
+  });
+
   // Public registration route (no auth required)
   app.post('/api/register', async (req, res) => {
     try {
-      console.log("Registration request body:", req.body);
-      
-      // Manual validation for debugging
+      // Manual validation
       const requiredFields = ['name', 'email', 'mobile', 'studentId', 'course', 'yearOfGraduation', 'collegeName'];
       const missingFields = requiredFields.filter(field => !req.body[field]);
       
       if (missingFields.length > 0) {
-        console.log("Missing fields:", missingFields);
         return res.status(400).json({ 
           message: "Missing required fields", 
           missingFields 
@@ -187,10 +214,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const validatedData = insertApplicantSchema.parse(req.body);
       
+      const errors: {[key: string]: string} = {};
+      
       // Check if email already exists
-      const existing = await storage.getApplicantByEmail(validatedData.email);
-      if (existing) {
-        return res.status(400).json({ message: "Email already registered" });
+      const existingEmail = await storage.getApplicantByEmail(validatedData.email);
+      if (existingEmail) {
+        errors.email = "Email already registered";
+      }
+
+      // Check if mobile already exists
+      const existingMobile = await storage.getApplicantByMobile(validatedData.mobile);
+      if (existingMobile) {
+        errors.mobile = "Mobile number already registered";
+      }
+      
+      // If there are any field errors, return them
+      if (Object.keys(errors).length > 0) {
+        return res.status(400).json({ 
+          message: "Registration failed", 
+          fieldErrors: errors 
+        });
       }
 
       const applicant = await storage.createApplicant(validatedData);
@@ -203,7 +246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           applicant.registrationId
         );
       } catch (emailError) {
-        console.log("Email sending failed (non-blocking):", emailError);
+        // Email sending failed but registration succeeded
       }
 
       res.json({ 
@@ -257,7 +300,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastName: 'Admin',
           role: 'admin'
         });
-        console.log('Test admin user created: admin@test.com / admin123');
+        // Test admin user created successfully
       }
     } catch (error) {
       console.error('Error creating test admin:', error);
@@ -269,22 +312,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const initializeData = async () => {
     try {
       await storage.restoreCompetitionData();
-      console.log("Competition data initialization complete");
+      // Competition data initialization complete
     } catch (error) {
       console.error("Competition data initialization failed:", error);
     }
   };
   await initializeData();
-
-  // Debug route to check applicant count
-  app.get('/api/debug/applicants-count', async (req, res) => {
-    try {
-      const count = await storage.getApplicantsCount();
-      res.json({ count });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
 
   // Admin route to clear all applicant data
   app.delete('/api/admin/clear-applicants', enhancedAuth, async (req: any, res) => {
@@ -1296,7 +1329,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Admin access required" });
       }
 
-      console.log("Creating round with data:", req.body);
+      // Creating round with the provided data
       const round = await storage.createCompetitionRound(req.body);
       res.json(round);
     } catch (error) {
@@ -1321,7 +1354,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         endTime: req.body.endTime ? new Date(req.body.endTime) : null,
       };
 
-      console.log("Updating round with data:", updateData);
+      // Updating round with the provided data
       const round = await storage.updateCompetitionRound(roundId, updateData);
       if (!round) {
         return res.status(404).json({ message: "Competition round not found" });
@@ -1533,8 +1566,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return a.name.localeCompare(b.name);
       });
       
-      console.log(`Found ${activeRounds.length} active rounds for applicant ${applicant.id} (status: ${applicant.status}):`, 
-        activeRounds.map(r => ({ id: r.id, name: r.name, status: r.status })));
+      // Found active rounds for applicant
       
       res.json({
         applicant,
@@ -1840,7 +1872,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (notification.useBulkTemplate && notification.bulkData) {
           // Handle bulk sending (not implemented in this basic version)
           // Would process CSV data and send personalized emails
-          console.log("Bulk sending not implemented yet");
+          // Bulk sending functionality to be implemented
         } else {
           // Send individual emails
           for (const email of notification.toEmails || []) {
@@ -1991,15 +2023,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Debug: Check if credentials are loaded
-      console.log('CCAvenue Merchant ID present:', !!process.env.CCAVENUE_MERCHANT_ID);
-      console.log('CCAvenue Access Code present:', !!process.env.CCAVENUE_ACCESS_CODE);
-      console.log('CCAvenue Working Key present:', !!process.env.CCAVENUE_WORKING_KEY);
-      console.log('Merchant ID length:', process.env.CCAVENUE_MERCHANT_ID?.length);
-      console.log('Access Code length:', process.env.CCAVENUE_ACCESS_CODE?.length);
-      console.log('Working Key length:', process.env.CCAVENUE_WORKING_KEY?.length);
-      console.log('Access Code first 4 chars:', process.env.CCAVENUE_ACCESS_CODE?.substring(0, 4));
-      console.log('Working Key first 8 chars:', process.env.CCAVENUE_WORKING_KEY?.substring(0, 8));
-
+      // CCAvenue credentials validation removed for production
+      
       // Generate CCAvenue payment request with all mandatory fields
       const paymentData = {
         merchant_id: process.env.CCAVENUE_MERCHANT_ID!,

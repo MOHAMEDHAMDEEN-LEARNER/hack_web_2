@@ -117,14 +117,26 @@ REPLIT_DOMAINS=your-domain.com
    node sample_data_generator.js
    ```
 
-4. **Build & Start**
+4. **Start Development Server**
    ```bash
-   # Development
-   npm run dev
+   # Recommended: Reliable startup script
+   ./start-dev.sh
    
-   # Production
+   # Alternative: Safe dev command (handles port conflicts)
+   npm run dev-safe
+   
+   # Standard: Basic dev command
+   npm run dev
+   ```
+   
+   The application will be available at `http://localhost:3001`
+
+   **Troubleshooting**: If `npm run dev` doesn't work, see [DEV-TROUBLESHOOTING.md](./DEV-TROUBLESHOOTING.md)
+
+5. **Production Build**
+   ```bash
    npm run build
-   npm start
+   npm run start
    ```
 
 ## 🚀 Deployment

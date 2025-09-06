@@ -7,22 +7,22 @@ interface OtpData {
 }
 
 export class OtpService {
-  private generateOtp(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  }
-
-  private isEmail(identifier: string): boolean {
-    return identifier.includes('@');
-  }
-
-  async sendOtp(data: OtpData): Promise<{ success: boolean; message: string }> {
-    try {
-      // Generate OTP
-      const otp = this.generateOtp();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-      
-      // Log OTP in development mode
-      if (process.env.NODE_ENV === 'development') {
+private generateOtp(): string {
+  // Use crypto for secure random number generation
+  const crypto = require('crypto');
+  const buffer = crypto.randomBytes(3);
+  const otp = parseInt(buffer.toString('hex'), 16).toString().substr(0, 6);
+  return otp.padStart(6, '0');
+}
+private async hashOtp(otp: string, salt: string): Promise<string> {
+  const crypto = require('crypto');
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(otp, salt, 64, (err: Error | null, derivedKey: Buffer) => {
+      if (err) reject(err);
+      resolve(derivedKey.toString('hex'));
+    });
+  });
+}
         console.log(`🔐 Generated OTP for ${data.identifier}: ${otp}`);
       }
 

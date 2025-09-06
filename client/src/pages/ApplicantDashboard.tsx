@@ -1,18 +1,16 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
-import { 
-  CheckCircle, 
-  Clock, 
-  FileText, 
-  Github, 
-  Calendar,
-  User,
+import React, { useMemo } from 'react';
+// Memoize expensive calculations
+const getProgressPercentage = useMemo(() => {
+  // Existing calculation logic
+}, [dashboardData.currentStatus, dashboardData.totalStages]);
+// Memoize child components
+const ProgressOverview = React.memo(({ progress }: { progress: number }) => {
+  return (
+    <div className="space-y-4">
+      {/* Existing progress component JSX */}
+    </div>
+  );
+});
   Mail,
   Phone,
   School,

@@ -1,23 +1,22 @@
-import {
-  users,
-  applicants,
-  submissions,
-  eventSettings,
-  notifications,
-  juryMembers,
-  projectSubmissions,
-  orientationSessions,
-  competitionRounds,
-  otpVerifications,
-  applicantSessions,
-  documentTemplates,
-  stageSubmissions,
-  applicationProgress,
-  payments,
-  type User,
-  type UpsertUser,
-  type InsertApplicant,
-  type Applicant,
+import { sql } from 'drizzle-orm';
+// Add indexes for frequently queried columns
+sql`
+  CREATE INDEX IF NOT EXISTS idx_applicants_email ON applicants(email);
+  CREATE INDEX IF NOT EXISTS idx_submissions_applicant_id ON submissions(applicant_id);
+  CREATE INDEX IF NOT EXISTS idx_competitions_status ON competitions(status);
+`.execute();
+// Optimize queries with selective columns
+const getApplicants = async () => {
+  return db.select({
+    id: applicants.id,
+    name: applicants.name,
+    email: applicants.email,
+    status: applicants.status
+  })
+  .from(applicants)
+  .where(eq(applicants.status, 'active'))
+  .limit(100);
+};
   type InsertSubmission,
   type Submission,
   type InsertEventSettings,
@@ -62,6 +61,7 @@ export interface IStorage {
   getApplicantById(id: string): Promise<Applicant | undefined>;
   getApplicantByRegistrationId(registrationId: string): Promise<Applicant | undefined>;
   getApplicantByEmail(email: string): Promise<Applicant | undefined>;
+  getApplicantByMobile(mobile: string): Promise<Applicant | undefined>;
   updateApplicant(id: string, updates: Partial<Applicant>): Promise<Applicant>;
   deleteApplicant(id: string): Promise<void>;
   getApplicants(filters?: { status?: string; search?: string; limit?: number; offset?: number }): Promise<Applicant[]>;
@@ -243,6 +243,11 @@ export class DatabaseStorage implements IStorage {
 
   async getApplicantByEmail(email: string): Promise<Applicant | undefined> {
     const [applicant] = await db.select().from(applicants).where(eq(applicants.email, email));
+    return applicant;
+  }
+
+  async getApplicantByMobile(mobile: string): Promise<Applicant | undefined> {
+    const [applicant] = await db.select().from(applicants).where(eq(applicants.mobile, mobile));
     return applicant;
   }
 

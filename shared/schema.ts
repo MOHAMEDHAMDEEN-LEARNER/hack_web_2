@@ -66,7 +66,7 @@ export const applicants = pgTable("applicants", {
   userId: varchar("user_id").references(() => users.id),
   name: text("name").notNull(),
   email: varchar("email").notNull(),
-  mobile: varchar("mobile").notNull(),
+  mobile: varchar("mobile").unique().notNull(),
   studentId: varchar("student_id").notNull(),
   course: text("course").notNull(),
   yearOfGraduation: varchar("year_of_graduation").notNull(),
@@ -425,6 +425,10 @@ export const insertApplicantSchema = createInsertSchema(applicants).omit({
   registrationId: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  mobile: z.string()
+    .regex(/^\d{10}$/, "Mobile number must be exactly 10 digits")
+    .refine((val) => val.length === 10, "Mobile number must be exactly 10 digits"),
 });
 
 export const insertSubmissionSchema = createInsertSchema(submissions).omit({
