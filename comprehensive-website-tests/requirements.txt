@@ -1,0 +1,38 @@
+# Comprehensive Website Testing Requirements
+
+# Core Testing Framework
+pytest>=7.4.0
+pytest-html>=3.2.0
+pytest-xdist>=3.3.1
+pytest-asyncio>=0.21.1
+pytest-mock>=3.11.1
+
+# Browser Automation
+playwright>=1.40.0
+
+# HTTP/API Testing  
+requests>=2.31.0
+httpx>=0.25.0
+
+# Image and Video Processing
+Pillow>=10.0.0
+opencv-python>=4.8.0
+
+# Data Processing
+pandas>=2.1.0
+
+# Reporting and Documentation
+jinja2>=3.1.0
+markupsafe>=2.1.0
+
+# Utilities
+python-dateutil>=2.8.2
+faker>=19.6.0
+
+# Performance Testing
+locust>=2.17.0
+
+# Additional Testing Tools
+selenium>=4.15.0  # Backup browser automation
+beautifulsoup4>=4.12.0  # HTML parsing
+lxml>=4.9.0  # XML/HTML processing

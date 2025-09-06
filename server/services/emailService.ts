@@ -41,16 +41,23 @@ class EmailService {
         });
       }
     } catch (error) {
-      console.warn("Failed to load email settings from database:", error);
-    }
-
-    // Fallback to environment variables
-    if (this.transporter) {
-      return this.transporter;
-    }
-
-    throw new Error("Email service is not configured. Please configure email settings in Admin Settings.");
-  }
+          // Log detailed error for debugging
+          console.error("Failed to load email settings from database:", {
+            error,
+            message: error instanceof Error ? error.message : 'Unknown error',
+            stack: error instanceof Error ? error.stack : undefined
+          });
+          // Log warning for monitoring
+          console.warn("Falling back to environment variable configuration");
+        }
+        // Fallback to environment variables
+        if (this.transporter) {
+          return this.transporter;
+        }
+        // If no transporter is available, throw a more descriptive error
+        throw new Error(
+          "Email service configuration failed. Please configure email settings in Admin Settings or provide valid environment variables (SMTP_USER, SMTP_PASS)."
+        );
 
   private getRegistrationTemplate(name: string, registrationId: string): EmailTemplate {
     return {

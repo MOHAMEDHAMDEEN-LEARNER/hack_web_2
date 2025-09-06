@@ -206,7 +206,7 @@ export default function ApplicantLogin() {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Don't have an account?{' '}
               <button 
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/register')}
                 className="text-blue-600 hover:text-blue-500 font-medium"
               >
                 Register here

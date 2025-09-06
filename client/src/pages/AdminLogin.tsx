@@ -9,7 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, LogIn, User } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useQueryClient } from "@tanstack/react-query";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -21,6 +22,8 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -42,7 +45,11 @@ export default function AdminLogin() {
       });
 
       if (response.ok) {
-        window.location.href = "/";
+        // Invalidate and refetch user data
+        await queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+        await queryClient.refetchQueries({ queryKey: ["/api/auth/user"] });
+        // Navigate to admin dashboard
+        setLocation("/admin/dashboard");
       } else {
         const error = await response.json();
         toast({

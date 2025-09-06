@@ -1,0 +1,39 @@
+{
+  "name": "hackathon-platform-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive Playwright tests for HackathonHub platform",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "test:auth": "playwright test --grep @auth",
+    "test:admin": "playwright test --grep @admin",
+    "test:jury": "playwright test --grep @jury",
+    "test:applicant": "playwright test --grep @applicant",
+    "test:payments": "playwright test --grep @payments",
+    "test:api": "playwright test --grep @api",
+    "test:accessibility": "playwright test --grep @accessibility",
+    "test:performance": "playwright test --grep @performance",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:critical": "playwright test --grep @critical",
+    "clean": "rm -rf test-results/ playwright-report/ reports/",
+    "install:browsers": "playwright install",
+    "setup": "npm install && playwright install"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.40.0",
+    "@axe-core/playwright": "^4.8.3",
+    "faker": "^6.6.6",
+    "dotenv": "^16.3.1",
+    "csv-parser": "^3.2.0",
+    "xlsx": "^0.18.5",
+    "sharp": "^0.32.6",
+    "pdfkit": "^0.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

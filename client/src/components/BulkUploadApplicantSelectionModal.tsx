@@ -12,27 +12,28 @@ interface BulkUploadApplicantSelectionModalProps {
   onClose: () => void;
 }
 
-export default function BulkUploadApplicantSelectionModal({ isOpen, onClose }: BulkUploadApplicantSelectionModalProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const downloadTemplateMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch('/api/applicant-selection/template');
-      if (!response.ok) throw new Error('Failed to download template');
-      
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = 'applicant-selection-template.xlsx';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    },
+// Extract file validation to reusable hook
+const useFileValidation = (options: FileValidationOptions) => {
+  const validateFile = (file: File): ValidationResult => {
+    if (file.size > options.maxSize) {
+      return {
+        valid: false,
+        error: `File size must be less than ${options.maxSize / (1024 * 1024)}MB`
+      };
+    }
+    
+    if (!options.allowedTypes.includes(file.type)) {
+      return {
+        valid: false,
+        error: `File type must be one of: ${options.allowedTypes.join(', ')}`
+      };
+    }
+    
+    return { valid: true };
+  };
+  
+  return { validateFile };
+};
     onSuccess: () => {
       toast({
         title: "Template Downloaded",

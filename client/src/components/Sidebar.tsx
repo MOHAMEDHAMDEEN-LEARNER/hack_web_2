@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface SidebarProps {
   userRole: 'admin' | 'jury' | 'applicant';
@@ -18,9 +19,37 @@ interface SidebarProps {
 
 export default function Sidebar({ userRole }: SidebarProps) {
   const [location] = useLocation();
+  const queryClient = useQueryClient();
   
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      // Clear the user data from cache
+      queryClient.clear();
+      // Redirect to landing page
+      window.location.href = '/';
+    },
+    onError: (error) => {
+      console.error('Logout error:', error);
+      // Fallback - try the GET route
+      window.location.href = '/api/auth/logout';
+    }
+  });
+
   const handleLogout = () => {
-    window.location.href = '/api/logout';
+    logoutMutation.mutate();
   };
 
   const getNavigationItems = () => {
@@ -99,9 +128,14 @@ export default function Sidebar({ userRole }: SidebarProps) {
             variant="ghost"
             size="sm"
             onClick={handleLogout}
+            disabled={logoutMutation.isPending}
             className="p-2"
           >
-            <LogOut className="w-4 h-4" />
+            {logoutMutation.isPending ? (
+              <div className="w-4 h-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
+            ) : (
+              <LogOut className="w-4 h-4" />
+            )}
           </Button>
         </div>
       </div>

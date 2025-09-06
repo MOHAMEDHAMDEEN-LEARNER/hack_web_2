@@ -1,0 +1,123 @@
+{
+  "timestamp": "2025-08-29T11:52:09.759046",
+  "summary": {
+    "total_duration": 4.072438955307007,
+    "total_modules": 11,
+    "total_passed": 0,
+    "total_failed": 0,
+    "total_skipped": 0,
+    "success_rate": 0
+  },
+  "modules": {
+    "test_01_landing_page.py": {
+      "description": "Landing Page Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.6232819557189941,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_02_registration.py": {
+      "description": "Registration System Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.34582996368408203,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_03_admin_auth.py": {
+      "description": "Admin Authentication Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.33579015731811523,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_04_applicant_auth.py": {
+      "description": "Applicant Authentication Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.3477480411529541,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_05_admin_dashboard.py": {
+      "description": "Admin Dashboard Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.3325157165527344,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_06_applicant_portal.py": {
+      "description": "Applicant Portal Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.33046984672546387,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_07_competition_management.py": {
+      "description": "Competition Management Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.3404419422149658,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_08_api_endpoints.py": {
+      "description": "API Endpoints Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.33965229988098145,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_09_ui_components.py": {
+      "description": "UI Components Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.39987802505493164,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_10_performance.py": {
+      "description": "Performance Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.33916592597961426,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    },
+    "test_11_error_handling.py": {
+      "description": "Error Handling Tests",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 0.33692502975463867,
+      "return_code": 4,
+      "stdout": "",
+      "stderr": "/Users/mohamedhamdeen/Library/Python/3.9/lib/python/site-packages/_pytest/config/__init__.py:331: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --headless=True\n  inifile: None\n  rootdir: /Users/mohamedhamdeen/Documents/hackathonwebsite/Hackathon copy/comprehensive-website-tests\n\n"
+    }
+  }
+}

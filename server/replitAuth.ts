@@ -8,7 +8,11 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
-if (!process.env.REPLIT_DOMAINS) {
+// Skip Replit auth setup in development mode with demo config
+const isDevelopmentMode = process.env.NODE_ENV === 'development' && 
+  process.env.REPL_ID === 'demo-repl-id';
+
+if (!process.env.REPLIT_DOMAINS && !isDevelopmentMode) {
   throw new Error("Environment variable REPLIT_DOMAINS not provided");
 }
 
@@ -38,7 +42,7 @@ export function getSession() {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production', // Only secure in production
       maxAge: sessionTtl,
     },
   });
@@ -71,6 +75,14 @@ export async function setupAuth(app: Express) {
   app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Skip OAuth setup in development mode
+  if (isDevelopmentMode) {
+    console.log("Development mode: Skipping Replit OAuth setup");
+    passport.serializeUser((user: Express.User, cb) => cb(null, user));
+    passport.deserializeUser((user: Express.User, cb) => cb(null, user));
+    return;
+  }
 
   const config = await getOidcConfig();
 
@@ -117,10 +129,16 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/logout", (req, res) => {
     req.logout(() => {
+      // Determine the correct redirect URL based on environment
+      const isDevelopment = process.env.NODE_ENV !== 'production';
+      const redirectUri = isDevelopment 
+        ? `${req.protocol}://${req.hostname}:3001`
+        : `${req.protocol}://${req.hostname}`;
+        
       res.redirect(
         client.buildEndSessionUrl(config, {
           client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
+          post_logout_redirect_uri: redirectUri,
         }).href
       );
     });

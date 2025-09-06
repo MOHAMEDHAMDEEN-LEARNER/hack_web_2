@@ -11,23 +11,24 @@ export class CCAvenueService {
     this.workingKey = workingKey;
   }
 
-  encrypt(plainText: string): string {
-    try {
-      const key = crypto.createHash('md5').update(this.workingKey).digest();
-      const iv = Buffer.alloc(16, 0); // 16 bytes of 0x00
-      const cipher = crypto.createCipheriv('aes-128-cbc', key, iv);
-      
-      let encrypted = cipher.update(plainText, 'utf8', 'hex');
-      encrypted += cipher.final('hex');
-      
-      return encrypted;
-    } catch (error) {
-      console.error('Encryption error:', error);
-      throw new Error('Failed to encrypt data');
-    }
+encrypt(plainText: string): string {
+  try {
+    // Use a secure IV
+    const crypto = require('crypto');
+    const iv = crypto.randomBytes(16);
+    const key = crypto.createHash('md5').update(this.workingKey).digest();
+    const cipher = crypto.createCipheriv('aes-128-cbc', key, iv);
+    
+    let encrypted = cipher.update(plainText, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    
+    // Include IV in encrypted data
+    return iv.toString('hex') + ':' + encrypted;
+  } catch (error) {
+    console.error('Encryption error:', error);
+    throw new Error('Failed to encrypt payment data');
   }
-
-  decrypt(encryptedText: string): string {
+}
     try {
       const key = crypto.createHash('md5').update(this.workingKey).digest();
       const iv = Buffer.alloc(16, 0); // 16 bytes of 0x00
